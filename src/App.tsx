@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Todo from './components/Todo';
 import NewTodo from './components/NewTodo';
 
@@ -24,51 +24,48 @@ const initialTodos: TodoType[] = [
 ];
 
 function App() {
-    const [newTodo, setNewTodo] = useState('');
     const [allTodos, setAllTodos] = useState(initialTodos);
 
-    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewTodo(e.target.value);
+    const createTodo = useCallback((todoName: string) => {
+        setAllTodos((previousValue) => [
+            ...previousValue,
+            {
+                id: new Date().getTime(),
 
-    const createTodo = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const newAllTodos = [...allTodos];
-        newAllTodos.push({
-            id: allTodos.length,
-            text: newTodo,
-            isDone: false,
-        });
-        setAllTodos(newAllTodos);
-        setNewTodo('');
-    };
+                text: todoName,
+                isDone: false,
+            },
+        ]);
+    }, []);
 
-    const handleIsDone = (id: number) => {
-        const newAllTodos = allTodos.map((item) => {
-            if (item.id === id) {
-                return { ...item, isDone: !item.isDone };
-            }
-            return item;
-        });
-        setAllTodos(newAllTodos);
-    };
+    const handleIsDone = useCallback((id: number) => {
+        setAllTodos((previousValue) =>
+            previousValue.map((item) => {
+                if (item.id === id) {
+                    return { ...item, isDone: !item.isDone };
+                }
+                return item;
+            })
+        );
+    }, []);
 
-    const deleteTodo = (id: number) => {
-        const newAllTodos = [...allTodos];
-        setAllTodos(newAllTodos.filter((item) => item.id !== id));
-    };
+    const deleteTodo = useCallback((id: number) => {
+        setAllTodos((previousValue) => previousValue.filter((item) => item.id !== id));
+    }, []);
 
-    const handleEdit = (id: number, newText: string) => {
-        const newAllTodos = allTodos.map((item) => {
-            if (item.id === id) {
-                return { ...item, text: newText };
-            }
-            return item;
-        });
-        setAllTodos(newAllTodos);
-    };
-
+    const handleEdit = useCallback((id: number, newText: string) => {
+        setAllTodos((previousValue) =>
+            previousValue.map((item) => {
+                if (item.id === id) {
+                    return { ...item, text: newText };
+                }
+                return item;
+            })
+        );
+    }, []);
     return (
         <div className="App">
-            <NewTodo todo={newTodo} onAddTask={createTodo} onTextChange={handleTextChange} />
+            <NewTodo onSubmit={createTodo} />
             <ul>
                 {allTodos.map((todo) => {
                     return (

@@ -1,15 +1,29 @@
+import { memo, useCallback, useState } from 'react';
+
 type NewTodoProps = {
-    todo: string;
-    onAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
-    onTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSubmit: (todoText: string) => void;
 };
 
-export default function NewTodo({ todo, onAddTask, onTextChange }: NewTodoProps) {
+const NewTodo = ({ onSubmit }: NewTodoProps) => {
+    const [value, setValue] = useState('');
+
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+    }, []);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onSubmit(value);
+        setValue('');
+    };
+
     return (
-        <form onSubmit={onAddTask}>
+        <form onSubmit={handleSubmit}>
             <label htmlFor="todo">New todo</label>
-            <input type="text" id="todo" onChange={onTextChange} value={todo}></input>
+            <input type="text" id="todo" onChange={handleInputChange} value={value}></input>
             <button type="submit">Add new task</button>
         </form>
     );
-}
+};
+
+export default memo(NewTodo);

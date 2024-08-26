@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { TodoType } from '../types/main';
 
 type TodoProps = {
@@ -66,4 +66,4 @@ function Todo({ todo, onDelete, onToggle, onEdit }: TodoProps) {
     );
 }
 
-export default Todo;
+export default memo(Todo);

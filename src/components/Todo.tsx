@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState } from 'react';
+import type { TodoType } from '../types/main';
 
-function App({ todo, onDelete, onToggle, onEdit }) {
+type TodoProps = {
+    todo: TodoType;
+    onDelete: (id: number) => void;
+    onToggle: (id: number) => void;
+    onEdit: (id: number, newText: string) => void;
+};
+
+function Todo({ todo, onDelete, onToggle, onEdit }: TodoProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [newText, setNewText] = useState(todo.text);
 
-    const handleTextChange = (e) => setNewText(e.target.value);
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewText(e.target.value);
 
-    const handleSave = (e, id) => {
+    const handleSave = (e: React.FormEvent<HTMLFormElement>, id: number) => {
         e.preventDefault();
         setIsEditing(false);
         onEdit(id, newText);
@@ -17,12 +25,18 @@ function App({ todo, onDelete, onToggle, onEdit }) {
     const handleCancel = () => setIsEditing(false);
 
     return (
-        <li style={{ textAlign: "left", listStyle: "none" }}>
+        <li style={{ textAlign: 'left', listStyle: 'none' }}>
             {isEditing ? (
                 <>
                     <form onSubmit={(e) => handleSave(e, todo.id)}>
-                        <label htmlFor={todo.id}></label>
-                        <input type="text" id={todo.id} name={todo.text} value={newText} onChange={handleTextChange} />
+                        <label htmlFor={todo.id.toString()}></label>
+                        <input
+                            type="text"
+                            id={todo.id.toString()}
+                            name={todo.text}
+                            value={newText}
+                            onChange={handleTextChange}
+                        />
                         <button type="submit">save</button>
                     </form>
                     <button type="button" onClick={handleCancel}>
@@ -33,12 +47,12 @@ function App({ todo, onDelete, onToggle, onEdit }) {
                 <>
                     <input
                         type="checkbox"
-                        id={todo.id}
+                        id={todo.id.toString()}
                         name={todo.text}
                         checked={todo.isDone}
                         onChange={() => onToggle(todo.id)}
                     />
-                    <label htmlFor={todo.id}>{todo.text}</label>
+                    <label htmlFor={todo.id.toString()}>{todo.text}</label>
 
                     <button type="button" onClick={hadleEditClick}>
                         edit
@@ -52,4 +66,4 @@ function App({ todo, onDelete, onToggle, onEdit }) {
     );
 }
 
-export default App;
+export default Todo;

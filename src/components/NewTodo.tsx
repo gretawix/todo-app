@@ -1,4 +1,10 @@
-export default function NewTodo({ todo, onAddTask, onTextChange }) {
+type NewTodoProps = {
+    todo: string;
+    onAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
+    onTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export default function NewTodo({ todo, onAddTask, onTextChange }: NewTodoProps) {
     return (
         <form onSubmit={onAddTask}>
             <label htmlFor="todo">New todo</label>

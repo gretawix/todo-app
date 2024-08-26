@@ -1,33 +1,35 @@
-import "./App.css";
-import { useState } from "react";
-import Todo from "./components/Todo";
-import NewTodo from "./components/NewTodo";
+import './App.css';
+import { useState } from 'react';
+import Todo from './components/Todo';
+import NewTodo from './components/NewTodo';
 
-const initialTodos = [
+import type { TodoType } from './types/main';
+
+const initialTodos: TodoType[] = [
     {
         id: 0,
-        text: "hello",
+        text: 'hello',
         isDone: true,
     },
     {
         id: 1,
-        text: "hellooo",
+        text: 'hellooo',
         isDone: true,
     },
     {
         id: 2,
-        text: "hello nah",
+        text: 'hello nah',
         isDone: false,
     },
 ];
 
 function App() {
-    const [newTodo, setNewTodo] = useState("");
+    const [newTodo, setNewTodo] = useState('');
     const [allTodos, setAllTodos] = useState(initialTodos);
 
-    const handleTextChange = (e) => setNewTodo(e.target.value);
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewTodo(e.target.value);
 
-    const createTodo = (e) => {
+    const createTodo = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newAllTodos = [...allTodos];
         newAllTodos.push({
@@ -36,10 +38,10 @@ function App() {
             isDone: false,
         });
         setAllTodos(newAllTodos);
-        setNewTodo("");
+        setNewTodo('');
     };
 
-    const handleIsDone = (id) => {
+    const handleIsDone = (id: number) => {
         const newAllTodos = allTodos.map((item) => {
             if (item.id === id) {
                 return { ...item, isDone: !item.isDone };
@@ -49,12 +51,12 @@ function App() {
         setAllTodos(newAllTodos);
     };
 
-    const deleteTodo = (id) => {
+    const deleteTodo = (id: number) => {
         const newAllTodos = [...allTodos];
         setAllTodos(newAllTodos.filter((item) => item.id !== id));
     };
 
-    const handleEdit = (id, newText) => {
+    const handleEdit = (id: number, newText: string) => {
         const newAllTodos = allTodos.map((item) => {
             if (item.id === id) {
                 return { ...item, text: newText };
